@@ -55,8 +55,6 @@ public interface initMyApi {
     @GET("/user/Naver/")
     Call<NaverResponse> getNaverResponse();
 
-    //@GET("Not Determined yet")
-
     @GET("/service/friendsList")
     Call<FriendListResponse> getFriendListResponse();
 

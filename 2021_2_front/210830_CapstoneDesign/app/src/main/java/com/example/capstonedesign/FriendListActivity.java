@@ -1,6 +1,7 @@
 package com.example.capstonedesign;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -118,8 +119,8 @@ public class FriendListActivity extends AppCompatActivity {
 
         listView.setAdapter(frListAdapter[0]);
 
-        RetrofitClient retrofitClient = RetrofitClient.getNewInstance(getApplicationContext());
-        initMyApi initMyApi = RetrofitClient.getNewRetrofitInterface();
+        retrofitClient = RetrofitClient.getNewInstance(getApplicationContext());
+        initMyApi = RetrofitClient.getNewRetrofitInterface();
 
         if(tablayout.getSelectedTabPosition() == 0){
             // 내가 한 요청
@@ -174,8 +175,8 @@ public class FriendListActivity extends AppCompatActivity {
                 // 우선 ArrayList clear해주고
                 arrayList.clear();
 
-                RetrofitClient retrofitClient = RetrofitClient.getNewInstance(getApplicationContext());
-                initMyApi initMyApi = RetrofitClient.getNewRetrofitInterface();
+                retrofitClient = RetrofitClient.getNewInstance(getApplicationContext());
+                initMyApi = RetrofitClient.getNewRetrofitInterface();
 
                 // 새로 데이터 추가한후
                 // response에서 adapter.notifyDataSetChanged()를 통해 listview 갱신.
@@ -225,6 +226,35 @@ public class FriendListActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {}
         });
 
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                retrofitClient = RetrofitClient.getNewInstance(getApplicationContext());
+                initMyApi = RetrofitClient.getNewRetrofitInterface();
+
+                initMyApi.getFriendListResponse().enqueue(new Callback<FriendListResponse>() {
+                    @Override
+                    public void onResponse(Call<FriendListResponse> call, Response<FriendListResponse> response) {
+                        if(response.isSuccessful()){
+                            FriendListResponse result = response.body();
+
+                            String status_msg = result.getStatus();
+                            Log.d("Getting friendsList",status_msg);
+
+                            arraylist.clear();
+                            List<Friend> friendsList = result.getFriendList();
+                            arraylist.addAll(friendsList);
+
+                            myFriendListAdapter.notifyDataSetChanged();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<FriendListResponse> call, Throwable t) {
+                    }
+                });
+            }
+        });
+
         dialog.show();
     }
     public void showDialogAF(Dialog dialog){
@@ -236,8 +266,8 @@ public class FriendListActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = input_email.getText().toString();
 
-                RetrofitClient retrofitClient = RetrofitClient.getNewInstance(getApplicationContext());
-                initMyApi initMyApi = RetrofitClient.getNewRetrofitInterface();
+                retrofitClient = RetrofitClient.getNewInstance(getApplicationContext());
+                initMyApi = RetrofitClient.getNewRetrofitInterface();
 
                 AddFriendRequest addFriendRequest = new AddFriendRequest(email);
 
@@ -266,12 +296,15 @@ public class FriendListActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("_FriendListActivity","onPause");
         first_time = false;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        Log.d("_FriendListActivity","onResume");
 
         if(!first_time){
             retrofitClient = RetrofitClient.getNewInstance(getApplicationContext());
