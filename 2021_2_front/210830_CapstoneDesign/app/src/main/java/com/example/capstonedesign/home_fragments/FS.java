@@ -131,7 +131,7 @@ public class FS extends Fragment {
                 myGoogleFit.updateDailyTotal(getContext(), finalDataType,ActDatas,textView_actData,current_step,progressBar);
             }
         };
-        scheduler.schedule(task,0,60000); // 0초 뒤 1분마다 반복실행.
+        scheduler.schedule(task,0,5000); // 0초 뒤 1분마다 반복실행.
         
         /** 목표 걸음수를 보여주는 텍스트 **/
         text_goal = rootView.findViewById(R.id.text_goal);
@@ -298,7 +298,7 @@ public class FS extends Fragment {
                         myGoogleFit.updateDailyTotal(mContext, finalDataType,ActDatas,textView_actData,current_step,progressBar);
                     }
                 };
-                scheduler.schedule(task,0,60000);
+                scheduler.schedule(task,0,5000);
             }
         });
         dialog.show();

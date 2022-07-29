@@ -65,6 +65,8 @@ public class FireBaseMS extends FirebaseMessagingService {
         String title = data.get("title");
         String body = data.get("body");
 
+        if(body == null) body = "";
+
         dbOpenHelper.insertColumn(profilePhoto,title,body);
         dbOpenHelper.close();
 

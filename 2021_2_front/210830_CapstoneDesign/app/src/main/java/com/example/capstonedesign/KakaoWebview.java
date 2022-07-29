@@ -83,9 +83,7 @@ public class KakaoWebview extends AppCompatActivity {
                     //view.destroy();
                     //finish();
                 }
-
             }
-
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = Uri.parse(request.getUrl().toString());
@@ -94,7 +92,6 @@ public class KakaoWebview extends AppCompatActivity {
                 if(uri.getPath().contains("/user/kakao/callback")) {
                     token_result = true;
                 }
-
                 return false;
             }
         });
@@ -110,6 +107,7 @@ public class KakaoWebview extends AppCompatActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
     public class MyJavascriptInterface {
 
         @JavascriptInterface
@@ -117,6 +115,7 @@ public class KakaoWebview extends AppCompatActivity {
             Log.d("html","html"+html);
             JSONObject jsonObject = new JSONObject(html);
             String token = jsonObject.getString("access token");
+            PreferenceManager.setString(getApplicationContext(),"token",token);
             editor.putString("token", token);
             editor.commit();
             Intent intent = new Intent(getApplicationContext(), Home.class);
